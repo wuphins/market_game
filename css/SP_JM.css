@@ -1,0 +1,51 @@
+      .hidden {
+        display: none;
+      }
+
+      .hide {
+        color: white;
+      }
+
+      .wrapper {
+          text-align: center;
+      }
+
+      .button {
+          position: absolute;
+          top: 50%;
+      }
+
+      #start_butt {
+          font-size: 125%;
+          background-color: blue;
+          border: black;
+          color: white;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+      }
+
+      .buy {
+          font-size: 125%;
+          background-color: #008D97;
+          border: black;
+          color: white;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+      }
+
+      .sell {
+        font-size: 125%;
+        background-color: #F5811F;
+        border: black;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      #svgMain {margin-left:auto; margin-right:auto; display:block;}

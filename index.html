@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/SP_JM.css">
+    <div class="wrapper">
+      <h2 id="trade_val">Account Balance: $<span class="val">10,000</span></h2>
+    </div>
+    <svg id="svgMain" width="960" height="450"></svg>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="js/SP_JM.js"></script>
+  </head>
+  <body>
+    <div id="start_screen" class="wrapper">
+      <button id="start_butt" onclick="begin()">Start</button>
+    </div>
+    <div id="trade_screen" class="wrapper hidden">
+      <button class="sell" id="trade">Sell</button>
+    </div>
+    <div class="wrapper" id="date_message"></div>
+    <br>
+    <div id="notrade" class="wrapper hide" color="black">If you had made no trades during this time period, your account would now be worth: <b>$<span class="val_m"></span></b>.</div>
+  </body>
+</html>
