@@ -1,6 +1,47 @@
+function clean_num(type){
+	if(dec === 1){
+	  	var num = (Math.round(type*100)/100).toLocaleString('en');
+	  	if(num < 1000 & num >= 100){
+	  		while(num.length < 6){
+		  		if(num.indexOf('.') === -1){
+		  			num = num + '.';
+		  		}
+	  			num = num + '0';
+	  		};
+	  	}
+	  	else if(num < 100 & num >= 10){
+	  		while(num.length < 5){
+		  		if(num.indexOf('.') === -1){
+		  			num = num + '.';
+		  		}
+	  			num = num + '0';
+	  		};
+	  	}
+	  	else{
+	  		while(num.length < 4){
+		  		if(num.indexOf('.') === -1){
+		  			num = num + '.';
+		  		}
+	  			num = num + '0';
+	  		};
+	  	};
+	  }
+	else{
+		var num = (Math.round(type)).toLocaleString('en');	
+	};
+
+	return num;
+};
+
 function show_notrade(){
-      $('.val_m').text(Math.round(value_m).toLocaleString('en'));
-      $('#notrade').removeClass('hide');
+	  var end_val = clean_num(value_m);
+      $('.val_m').text(end_val);
+      if(invest_start === "1"){
+      	$('#notrade1').removeClass('hide');
+      }
+      else{
+      	$('#notrade0').removeClass('hide');
+  	  };      
       $('#trade_screen').addClass('hidden');
       $("#date_message").html(dates);
     };
@@ -24,15 +65,63 @@ function toPctChg(data) {
     })
 }
 
-var ID = Date.now();
-var years = 10;
-var speed = 100;
-var invested = 1;
-var value = 10000;
-var value_m = 10000;
+var GET = {};
+var query = window.location.search.substring(1).split("&");
+for (var i = 0, max = query.length; i < max; i++)
+{
+    if (query[i] === "")
+        continue;
+
+    var param = query[i].split("=");
+    GET[decodeURIComponent(param[0])] = decodeURIComponent(param[1] || "");
+};
+
+if(GET["amt"] === undefined){
+	var value = 10000;
+	var value_m = 10000;
+	var start_amt = 10000;
+	var dec = 0;
+}
+else{
+	var value = GET["amt"];
+	var value_m = GET["amt"];
+	var start_amt = GET["amt"];
+	var dec = 1;
+	if(value >= 1000){
+		var dec = 0;
+	}
+};
+
+if(GET["years"] === undefined){
+	var years = 10;
+}
+else{
+	var years = GET["years"];
+};
+
+if(GET["speed"] === undefined){
+	var speed = 100;
+}
+else{
+	var speed = GET["speed"];
+};
+
+if(GET["inv"] === undefined){
+	var invest_start = "1";
+}
+else{
+	var invest_start = GET["inv"];
+};
+
+var ID = GET["id"];
+var exp_date = Date.now();
+var invested = parseInt(invest_start);
 var shares_m;
 var shares = 0;
 var price;
+
+var intro_val = clean_num(value);
+$('.val').text(intro_val);
 
 var svg = d3.select("svg"),
     margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -54,7 +143,12 @@ var line = d3.line()
 
 var outputData = [  
         {
-            exp_date: [ID],
+            ID: [ID],
+            amt: [start_amt],
+            exp_date: [exp_date],
+            years: [years],
+            speed: [speed],
+            invest_start: [invest_start],
             date_b: [],
             date_e: [],
             close_b: [],
@@ -102,15 +196,6 @@ function begin(){
                       "July", "August", "September", "October", "November", "December"];
 
     dates = "Above is the performance of the S&P 500 from the week of " + monthNames[date_begin.getMonth()] + " " + date_begin.getDate() + ", " + date_begin.getFullYear() + " to the week of " + monthNames[date_end.getMonth()] + " " + date_end.getDate() + ", " + date_end.getFullYear() + ".";
-
-    // sells = [];
-    // buys = [];
-
-    // sells_date = [];
-    // buys_date = [];
-
-    // sells_close = [];
-    // buys_close = [];
 
     d3.select("#trade").on("click", function() {
       if(invested === 1){
@@ -203,12 +288,18 @@ function begin(){
     var elapsed = 1;
 
     function start(){
+      if(invested === 0){
+		$('#trade').text('Buy');
+    	$('#trade').removeClass('sell');
+    	$('#trade').addClass('buy');
+	  };
       $('#start_screen').addClass('hidden');
       $('#trade_screen').removeClass('hidden');
       $('#trade_val').removeClass('hidden');
       var elapsed_interval = setInterval(function() {
         update(elapsed);
-        $('.val').text(Math.round(value).toLocaleString('en'));
+        var curr_val = clean_num(value);
+		$('.val').text(curr_val);
         elapsed++;
 
         if(elapsed > subset.length) {
@@ -223,7 +314,7 @@ function begin(){
               data: {json: final_data},
             });
         };
-      }, 100);
+      }, speed);
     };
     start();
   });
