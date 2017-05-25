@@ -66,7 +66,13 @@ function toPctChg(data) {
 }
 
 var GET = {};
-var query = window.location.search.substring(1).split("&");
+params = window.location.search;
+if(params.indexOf('?Game=') === 0){
+	var code = params.substring(6);
+	var params = '?' + atob(code);
+}
+
+var query = params.substring(1).split("&");
 for (var i = 0, max = query.length; i < max; i++)
 {
     if (query[i] === "")
