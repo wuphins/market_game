@@ -2,10 +2,12 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Investment&nbsp;Game</title>
+    <title>Investment&nbsp;Simulator</title>
     <link rel="stylesheet" href="css/SP_JM.css">
-    <div class="wrapper">
-      <h2 id="trade_val">Account Balance: $<span class="val"></span></h2>
+     <div id="trade_val_1" class="wrapper">
+      <h3>Initial Investment: $<span class="initial"></span></h3></div>
+    <div id="trade_val_2" class="wrapper">
+      <h2 id="trade_val_2">Current Balance: $<span class="val"></span></h2>
     </div>
     <svg id="svgMain" width="960" height="450"></svg>
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -14,14 +16,15 @@
   </head>
   <body>
     <div id="start_screen" class="wrapper">
-      <button id="start_butt" onclick="begin()">Start</button>
+      <button id="start_butt" onclick="begin()">Begin</button>
     </div>
     <div id="trade_screen" class="wrapper hidden">
-      <button class="sell" id="trade">Sell</button>
+      <button class="sell" id="trade">Sell / Remove</button>
     </div>
     <div class="wrapper" id="date_message"></div>
     <br>
-    <div id="notrade1" class="wrapper hide" color="black">If you had made no trades during this time period, your account would now be worth: <b>$<span class="val_m"></span></b>.</div>
-    <div id="notrade0" class="wrapper hide" color="black">If you had entered the market at the beginning of the time period and made no subsequent trades (i.e., buy and hold), your account would now be worth: <b>$<span class="val_m"></span></b>.</div>
+    <div class="wrapper" id="end_msg"></div>
+    <br>
+    <div class="wrapper" id="end_msg1"></div>
   </body>
 </html>

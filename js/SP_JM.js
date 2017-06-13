@@ -30,20 +30,25 @@ function clean_num(type){
 		var num = (Math.round(type)).toLocaleString('en');	
 	};
 
-	return num;
+	return num.toLocaleString('en');
 };
 
-function show_notrade(){
-	  var end_val = clean_num(value_m);
-      $('.val_m').text(end_val);
-      if(invest_start === "1"){
-      	$('#notrade1').removeClass('hide');
-      }
-      else{
-      	$('#notrade0').removeClass('hide');
-  	  };      
-      $('#trade_screen').addClass('hidden');
-      $("#date_message").html(dates);
+function show_result(){
+    var end_val_a = clean_num(value);
+    var msg = "Your initial investment of $" + intro_val + " is now worth $" + end_val_a + ".";
+    var end_val = clean_num(value_m);
+    if(invest_start == 1){
+      var msg1 = "If you had made no trades during this time period, your account would now be worth: $" + end_val +".";
+    }
+    else{
+      var msg1 = "If you had entered the market at the beginning of the time period and made no subsequent trades (i.e., buy and hold), your account would now be worth: $" + end_val + ".";
+    };
+    $('.val_m').text(end_val);   
+    $('#trade_screen').addClass('hidden');
+    $("#date_message").html(dates);
+    //$("#name").html(ID);
+    $("#end_msg").html(msg);
+    $("#end_msg1").html(msg1);
     };
 
 function createSubset(data, years) {
@@ -128,6 +133,7 @@ var price;
 
 var intro_val = clean_num(value);
 $('.val').text(intro_val);
+$('.initial').text(intro_val);
 
 var svg = d3.select("svg"),
     margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -205,7 +211,7 @@ function begin(){
 
     d3.select("#trade").on("click", function() {
       if(invested === 1){
-        $('#trade').text('Buy');
+        $('#trade').text('Buy / Put Back');
         $('#trade').removeClass('sell');
         $('#trade').addClass('buy');
         invested = 0;
@@ -216,7 +222,7 @@ function begin(){
         sub_p[elapsed-1].sold = 1;
       }
       else{
-        $('#trade').text('Sell');
+        $('#trade').text('Sell / Remove');
         $('#trade').removeClass('buy');
         $('#trade').addClass('sell');
         shares = value/price;
@@ -289,6 +295,22 @@ function begin(){
         value = shares*price;
 
       };
+
+    if(value === parseFloat(start_amt)){
+        $('#trade_val_2').removeClass('up');
+        $('#trade_val_2').removeClass('down');
+        $('#trade_val_2').addClass('same');
+      }
+      else if(value > parseFloat(start_amt)){
+        $('#trade_val_2').removeClass('down');
+        $('#trade_val_2').removeClass('same');
+        $('#trade_val_2').addClass('up');
+      }
+      else{
+        $('#trade_val_2').removeClass('up');
+        $('#trade_val_2').removeClass('same');
+        $('#trade_val_2').addClass('down');
+      };
     };
         
     var elapsed = 1;
@@ -301,7 +323,7 @@ function begin(){
 	  };
       $('#start_screen').addClass('hidden');
       $('#trade_screen').removeClass('hidden');
-      $('#trade_val').removeClass('hidden');
+      
       var elapsed_interval = setInterval(function() {
         update(elapsed);
         var curr_val = clean_num(value);
@@ -310,7 +332,7 @@ function begin(){
 
         if(elapsed > subset.length) {
             clearInterval(elapsed_interval);
-            setTimeout(show_notrade());
+            setTimeout(show_result());
             outputData[0].value_a.push(value);
             outputData[0].value_nt.push(value_m);
             final_data = JSON.stringify(outputData);
