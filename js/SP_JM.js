@@ -34,40 +34,41 @@ function clean_num(type){
 };
 
 function show_result(){
-    var end_val_a = clean_num(value);
-    var msg = "Your initial investment of $" + intro_val + " is now worth $" + end_val_a + ".";
-    var end_val = clean_num(value_m);
-    if(invest_start == 1){
-      var msg1 = "If you had made no trades during this time period, your account would now be worth: $" + end_val +".";
-    }
-    else{
-      var msg1 = "If you had entered the market at the beginning of the time period and made no subsequent trades (i.e., buy and hold), your account would now be worth: $" + end_val + ".";
-    };
-    $('.val_m').text(end_val);   
-    $('#trade_screen').addClass('hidden');
-    $("#date_message").html(dates);
-    //$("#name").html(ID);
-    $("#end_msg").html(msg);
-    $("#end_msg1").html(msg1);
-    };
+  var end_val_a = clean_num(value);
+  var msg = "Your initial investment of $" + intro_val + " is now worth $" + end_val_a + ".";
+  var end_val = clean_num(value_m);
+  if(invest_start == 1){
+    var msg1 = "If you had made no trades during this time period, your account would now be worth: $" + end_val +".";
+  }
+  else{
+    var msg1 = "If you had entered the market at the beginning of the time period and made no subsequent trades (i.e., buy and hold), your account would now be worth: $" + end_val + ".";
+  };
+  $('.val_m').text(end_val);   
+  $('#trade_screen').addClass('hidden');
+  $("#date_message").html(dates);
+  //$("#name").html(ID);
+  $("#end_msg").html(msg);
+  $("#end_msg1").html(msg1);
+};
 
 function createSubset(data, years) {
-            return data_weeks = data.length,
-                   target_weeks = years * 52,
-                   max_index = data_weeks - target_weeks,
-                   start_index = Math.floor(Math.random() * max_index),
-                   data.slice(start_index, start_index + target_weeks)
-        }
+  return data_weeks = data.length,
+         target_weeks = years * 52,
+         max_index = data_weeks - target_weeks,
+         start_index = Math.floor(Math.random() * max_index),
+         data.slice(start_index, start_index + target_weeks)
+}
+
 function toPctChg(data) {
-    return baseline = data[0].close, data.map(function(data) {
-        return {
-            date: data.date,
-            close: data.close,
-            pct_close: (data.close - baseline) / baseline * 100,
-            sold: 0,
-            bought: 0
-        }
-    })
+  return baseline = data[0].close, data.map(function(data) {
+      return {
+          date: data.date,
+          close: data.close,
+          pct_close: (data.close - baseline) / baseline * 100,
+          sold: 0,
+          bought: 0
+      }
+  })
 }
 
 var GET = {};
@@ -179,7 +180,7 @@ var outputData = [
 
 
 function begin(){
-  d3.csv("data/sp500-50yr.csv", function(d) {
+  d3.csv("data/sp_july_2017.csv", function(d) {
     d.date = parseTime(d.date);
     d.close = parseFloat(d.close);
     return d;
@@ -209,39 +210,47 @@ function begin(){
 
     dates = "Above is the performance of the S&P 500 from the week of " + monthNames[date_begin.getMonth()] + " " + date_begin.getDate() + ", " + date_begin.getFullYear() + " to the week of " + monthNames[date_end.getMonth()] + " " + date_end.getDate() + ", " + date_end.getFullYear() + ".";
 
-    d3.select("#trade").on("click", function() {
-      if(invested === 1){
+    
+
+    function update(num){
+
+      if(invested === 0){
         $('#trade').text('Buy / Put Back');
-        $('#trade').removeClass('sell');
         $('#trade').addClass('buy');
-        invested = 0;
-        shares = 0;
-        outputData[0].sell_n.push(elapsed-1);
-        outputData[0].sell_d.push(sub_p[elapsed-1].date);
-        outputData[0].sell_c.push(sub_p[elapsed-1].close);
-        sub_p[elapsed-1].sold = 1;
       }
       else{
         $('#trade').text('Sell / Remove');
-        $('#trade').removeClass('buy');
         $('#trade').addClass('sell');
-        shares = value/price;
-        invested = 1;
-        outputData[0].buy_n.push(elapsed-1);
-        outputData[0].buy_d.push(sub_p[elapsed-1].date);
-        outputData[0].buy_c.push(sub_p[elapsed-1].close);
-        sub_p[elapsed-1].bought = 1;
-      }
-    });
+      };
 
-    function update(num){
+      d3.select("#trade").on("click", function() {
+        if(invested === 1){
+          $('#trade').removeClass('sell');
+          $('#trade').addClass('hidden');
+          invested = 0;
+          shares = 0;
+          outputData[0].sell_n.push(elapsed-1);
+          outputData[0].sell_d.push(sub_p[elapsed-1].date);
+          outputData[0].sell_c.push(sub_p[elapsed-1].close);
+          sub_p[elapsed-1].sold++;
+        }
+        else{
+          $('#trade').removeClass('buy');
+          $('#trade').addClass('hidden');
+          shares = value/price;
+          invested = 1;
+          outputData[0].buy_n.push(elapsed-1);
+          outputData[0].buy_d.push(sub_p[elapsed-1].date);
+          outputData[0].buy_c.push(sub_p[elapsed-1].close);
+          sub_p[elapsed-1].bought++;
+        }
+      });
 
       g.selectAll("g").remove();
       g.selectAll("path").remove();
       g.selectAll("circle").remove();
 
       var trial = sub_p.slice(0,num);
-
 
       x.domain(d3.extent(trial, function(d) { return d.date; }));
       y.domain(d3.extent(trial, function(d) { return d.pct_close; }));
@@ -252,26 +261,27 @@ function begin(){
       yAxis.tickFormat(function(d) { return d + "%"; });
 
       g.append("g")
-          .call(yAxis)
+        .call(yAxis)
         .append("text")
         .transition()
 
       g.append("path")
-          .datum(trial)
-          .attr("fill", "none")
-          .attr("stroke", "black")
-          .attr("stroke-linejoin", "round")
-          .attr("stroke-linecap", "round")
-          .attr("stroke-width", 1.75)
-          .attr("d", line)
+        .datum(trial)
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-width", 1.75)
+        .attr("d", line)
 
       g.selectAll("dot")
         .data(trial)
         .enter().append("circle")
         .attr("r", 7)
         .style("fill", function(d) {
-        if (d.sold === 1) {return "#F5811F"}
-        if (d.bought === 1) {return "#008D97"}
+        if (d.sold > d.bought) {return "#F5811F"}
+        if (d.bought > d.sold) {return "#008D97"}
+        if (d.bought > 0 && d.sold > 0 && d.bought === d.sold) {return "black"}
         ;})
         .style("display", function(d) {
         if (d.bought === 0 && d.sold === 0) {return "none"}
@@ -317,19 +327,16 @@ function begin(){
 
     function start(){
       if(invested === 0){
-		$('#trade').text('Buy');
-    	$('#trade').removeClass('sell');
-    	$('#trade').addClass('buy');
-	  };
+  		  $('#trade').text('Buy / Put Back');
+      	$('#trade').removeClass('sell');
+      	$('#trade').addClass('buy');
+      };
       $('#start_screen').addClass('hidden');
       $('#trade_screen').removeClass('hidden');
       
+      update(elapsed);
       var elapsed_interval = setInterval(function() {
-        update(elapsed);
-        var curr_val = clean_num(value);
-		$('.val').text(curr_val);
         elapsed++;
-
         if(elapsed > subset.length) {
             clearInterval(elapsed_interval);
             setTimeout(show_result());
@@ -341,7 +348,12 @@ function begin(){
               url: 'echo.py',
               data: {json: final_data},
             });
-        };
+        }
+        else{
+          update(elapsed);
+          var curr_val = clean_num(value);
+          $('.val').text(curr_val);
+        };        
       }, speed);
     };
     start();
