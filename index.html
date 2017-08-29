@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <title>Investment&nbsp;Simulator</title>
     <link rel="stylesheet" href="css/SP_JM.css">
-     <div id="trade_val_1" class="wrapper">
-      <h3>Initial Investment: $<span class="initial"></span></h3></div>
-    <div id="trade_val_2" class="wrapper">
-      <h2 id="trade_val_2">Current Balance: $<span class="val"></span></h2>
+     <div id="initialValue" class="center">
+      <h3>Initial Investment: $<span class="initialValueText"></span></h3></div>
+    <div id="currentValue" class="center">
+      <h2 id="currentValue">Current Balance: $<span class="currentValueText"></span></h2>
     </div>
     <svg id="svgMain" width="960" height="450"></svg>
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -15,16 +15,16 @@
     <script src="js/SP_JM.js"></script>
   </head>
   <body>
-    <div id="start_screen" class="wrapper">
-      <button id="start_butt" onclick="begin()">Begin</button>
+    <div id="startScreen" class="center">
+      <button id="startButton" onclick="begin()">Begin</button>
     </div>
-    <div id="trade_screen" class="wrapper hidden">
+    <div id="tradeScreen" class="center hidden">
       <button class="sell" id="trade">Sell / Remove</button>
     </div>
-    <div class="wrapper" id="date_message"></div>
+    <div class="center" id="dateMessage"></div>
     <br>
-    <div class="wrapper" id="end_msg"></div>
+    <div class="center" id="endMsg1"></div>
     <br>
-    <div class="wrapper" id="end_msg1"></div>
+    <div class="center" id="endMsg2"></div>
   </body>
 </html>

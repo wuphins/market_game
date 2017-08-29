@@ -2,10 +2,6 @@
         display: none;
       }
 
-      .hide {
-        color: white;
-      }
-
       .up {
         color: #228B22;
       }
@@ -18,11 +14,11 @@
         color: black;
       }
 
-      .wrapper {
+      .center {
           text-align: center;
       }
 
-      .id {
+      .name {
           text-align: center;
           font-size: 125%;
           font-weight: bold;
@@ -34,7 +30,7 @@
           top: 50%;
       }
 
-      #start_butt {
+      #startButton {
           font-size: 125%;
           background-color: blue;
           border: black;
